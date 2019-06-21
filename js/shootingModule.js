@@ -220,16 +220,16 @@ function check_explore(ammoBody, whose) {
       }, 6000);
     }
     
-    if(BazziObj[i].BazziFirst == true && BazziObj[i].BazziFirstAmmo!=ammoBody){
+    if(BazziObj[i].BazziFirst == true){
       var xxx = BazziObj[i].BazziFirstAmmo.ammoBody.position.x
       var yyy = BazziObj[i].BazziFirstAmmo.ammoBody.position.y
       var zzz = BazziObj[i].BazziFirstAmmo.ammoBody.position.z
       if( (Math.abs(xxx-xx)<=playerBody.len && zzz==zz) || 
            (Math.abs(zzz-zz)<=playerBody.len && xxx==xx) ){
         let jump = false
-        for(var i=0; i < explores.length; i++){
-          if ( ((zzz-zz)==0 && Math.round(exploreMeshes[i].position.z)-zz==0 && (xxx-xx)*(Math.round(exploreMeshes[i].position.x)-xx)>0 && Math.abs(Math.round(exploreMeshes[i].position.x)-xx) < Math.abs(xxx-xx)) ||
-               ((xxx-xx)==0 && Math.round(exploreMeshes[i].position.x)-xx==0 && (zzz-zz)*(Math.round(exploreMeshes[i].position.z)-zz)>0 && Math.abs(Math.round(exploreMeshes[i].position.z)-zz) < Math.abs(zzz-zz)) ){
+        for(var j=0; j < explores.length; j++){
+          if ( ((zzz-zz)==0 && Math.round(exploreMeshes[j].position.z)-zz==0 && (xxx-xx)*(Math.round(exploreMeshes[j].position.x)-xx)>0 && Math.abs(Math.round(exploreMeshes[j].position.x)-xx) < Math.abs(xxx-xx)) ||
+               ((xxx-xx)==0 && Math.round(exploreMeshes[j].position.x)-xx==0 && (zzz-zz)*(Math.round(exploreMeshes[j].position.z)-zz)>0 && Math.abs(Math.round(exploreMeshes[j].position.z)-zz) < Math.abs(zzz-zz)) ){
             jump = true
             break
           }
