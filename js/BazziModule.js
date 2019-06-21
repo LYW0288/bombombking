@@ -105,7 +105,7 @@ class Bazzi {
     }
 
     // 子彈剛體與網格
-    const ammoObj = new BazziBall(scale)
+    const ammoObj = new BazziBall(0.7)
     ammos.push(ammoObj.ammoBody)
     
     this.BazziFirstAmmo = ammoObj
@@ -145,7 +145,10 @@ class Bazzi {
     }
   }
   update(exploreMeshes, ammos) {
-    if(!this.alive) return
+    if(!this.alive) {
+      this.Bubbling()
+      return
+    }
     var dir = this.Mapping(exploreMeshes, ammos)
     //這段是在偵測四周哪裡可以走
     if(this.dir == 4){ //向+z方向走的話
@@ -299,12 +302,39 @@ class Bazzi {
     this.foot4.rotation.x = -Math.sin(this.walkOffset) / 2 // 右腳
   }
   Bubbling() {
-    this.walkOffset += 0.4
-    
-    this.foot1.rotation.x = Math.sin(this.walkOffset) / 2 // 右手
-    this.foot2.rotation.x = -Math.sin(this.walkOffset) / 2 // 左手
-    this.foot3.rotation.x = Math.sin(this.walkOffset) / 2 // 左腳
-    this.foot4.rotation.x = -Math.sin(this.walkOffset) / 2 // 右腳
+    if(!this.bubble) {
+      this.bubble = new Ball(1)
+      scene.add(this.bubble.ammoMesh)
+      this.bubble.ammoMesh.position.copy(this.Bazzi.position)
+      this.time = 0
+    }
+    if(this.time<=250) {
+      this.bubble.playAnimation()
+      this.walkOffset += 0.8
+      this.Bazzi.rotation.x += 0.005
+      this.Bazzi.rotation.y += 0.0005
+      this.Bazzi.rotation.z += 0.005
+
+       this.foot1.rotation.x = Math.sin(this.walkOffset) / 2 // 右手
+      this.foot2.rotation.x = -Math.sin(this.walkOffset) / 2 // 左手
+      this.foot3.rotation.x = Math.sin(this.walkOffset) / 2 // 左腳
+      this.foot4.rotation.x = -Math.sin(this.walkOffset) / 2 // 右腳
+      this.time++
+    } else if (this.time==251) {
+      scene.remove(this.bubble.ammoMesh)
+      this.foot1.rotation.x = -Math.PI / 4 // 右手
+      this.foot2.rotation.x = -Math.PI / 4 
+      this.foot3.rotation.x = -Math.PI / 4 
+      this.foot4.rotation.x = -Math.PI / 4 
+      this.time++
+    } else if (this.time<=310) {
+      this.Bazzi.position.y -= 0.005
+      this.time++
+    } else if (this.time==311)  {
+      world.remove(this.bodyBody)
+      scene.remove(this.Bazzi)
+      this.time++
+    }
   }
 }
 

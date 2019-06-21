@@ -143,13 +143,13 @@ function check_explore(ammoBody, whose) {
       }
       if(!jump){
         playerBody.first = false
+        world.remove(playerBody.firstAmmo)
+        scene.remove(playerBody.firstAmmoMesh)
         check_explore(playerBody.firstAmmo, 'player')
         var index = ammos.indexOf(playerBody.firstAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.firstAmmoMesh.geometry.dispose()
-        world.remove(playerBody.firstAmmo)
-        scene.remove(playerBody.firstAmmoMesh)
       }
     }
   }
@@ -170,13 +170,13 @@ function check_explore(ammoBody, whose) {
       if(!jump){
         //console.log('second bomb')
         playerBody.second = false
+        world.remove(playerBody.secondAmmo)
+        scene.remove(playerBody.secondAmmoMesh)
         check_explore(playerBody.secondAmmo, 'player')
         var index = ammos.indexOf(playerBody.secondAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.secondAmmoMesh.geometry.dispose()
-        world.remove(playerBody.secondAmmo)
-        scene.remove(playerBody.secondAmmoMesh)
       }
     }
   }
@@ -197,13 +197,13 @@ function check_explore(ammoBody, whose) {
       if(!jump){
         //console.log('third bomb')
         playerBody.third = false
+        world.remove(playerBody.thirdAmmo)
+        scene.remove(playerBody.thirdAmmoMesh)
         check_explore(playerBody.thirdAmmo, 'player')
         var index = ammos.indexOf(playerBody.thirdAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.thirdAmmoMesh.geometry.dispose()
-        world.remove(playerBody.thirdAmmo)
-        scene.remove(playerBody.thirdAmmoMesh)
       }
     }
   }
@@ -212,13 +212,11 @@ function check_explore(ammoBody, whose) {
     let By = BazziObj[i].bodyBody.position.y;
     let Bz = BazziObj[i].bodyBody.position.z;
     if( (Math.abs(Math.round(Bx)-xx)<=playerBody.len && Math.round(Bz)==zz) || (Math.abs(Math.round(Bz)-zz)<=playerBody.len && Math.round(Bx)==xx) ){
+      console.log(Math.abs(Math.round(Bx)-xx) +" " +Math.abs(Math.round(Bz)-zz))
       BazziObj[i].alive = false
-      world.remove(BazziObj[i].bodyBody)
-      scene.remove(BazziObj[i].Bazzi)
-      if (--mem==0) var die = setInterval(function(){
-        handleEndGame('Bazzi');
+      var die = setInterval(function(){
         clearInterval(die);
-      }, 300);
+      }, 6000);
     }
     
     if(BazziObj[i].BazziFirst == true && BazziObj[i].BazziFirstAmmo!=ammoBody){
@@ -237,13 +235,13 @@ function check_explore(ammoBody, whose) {
         }
         if(!jump){
           BazziObj[i].BazziFirst = false
+          world.remove(BazziObj[i].BazziFirstAmmo.ammoBody)
+          scene.remove(BazziObj[i].BazziFirstAmmo.ammoMesh)
           check_explore(BazziObj[i].BazziFirstAmmo.ammoBody, 'Bazzi')
           var index = ammos.indexOf(BazziObj[i].BazziFirstAmmo.ammoBody);
           if (index> -1)
             ammos.splice(index, 1);
           BazziObj[i].BazziFirstAmmo.ammoMesh.geometry.dispose()
-          world.remove(BazziObj[i].BazziFirstAmmo.ammoBody)
-          scene.remove(BazziObj[i].BazziFirstAmmo.ammoMesh)
         }
       }
     }

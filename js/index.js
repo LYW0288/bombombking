@@ -211,7 +211,7 @@ function render() {
         
   if (controls.enabled) {
     world.step(dt)
-    for(let i=0; i<BazziObj.length; i++)
+    for(var i=0; i<BazziObj.length; i++)
       BazziObj[i].update(exploreMeshes, ammos)
     // Update box mesh positions
     for (let i = 0; i < boxes.length; i++) {
@@ -254,16 +254,17 @@ function render() {
       scene.remove(item[i].ammoMesh);
       item_exist[i]=false;
     }
-    for(let i=0; i<BazziObj.length; i++){
-      x = BazziObj[i].Bazzi.position.x;
-      z = BazziObj[i].Bazzi.position.z;
+    for(var j=0; j<BazziObj.length; j++){
+      if (!BazziObj[j].alive) continue
+      x = BazziObj[j].Bazzi.position.x;
+      z = BazziObj[j].Bazzi.position.z;
       if(Math.round(x) == Math.round(xx) && Math.round(z) == Math.round(zz)){
         scene.remove(item[i].ammoMesh);
           item_exist[i]=false;
       }
-      if(BazziObj[i].BazziFirst == true){
-        x = BazziObj[i].BazziFirstAmmo.ammoBody.position.x;
-        z = BazziObj[i].BazziFirstAmmo.ammoBody.position.z;
+      if(BazziObj[j].BazziFirst == true){
+        x = BazziObj[j].BazziFirstAmmo.ammoBody.position.x;
+        z = BazziObj[j].BazziFirstAmmo.ammoBody.position.z;
         if(Math.round(x) == Math.round(xx) && Math.round(z) == Math.round(zz)){
           scene.remove(item[i].ammoMesh);
           item_exist[i]=false;
@@ -296,7 +297,7 @@ function render() {
     }
   }
 
-  for(let i=0; i<BazziObj.length; i++){
+  for(var i=0; i<BazziObj.length; i++){
     if(BazziObj[i].BazziFirst) 
       BazziObj[i].BazziFirstAmmo.playAnimation()
   }
