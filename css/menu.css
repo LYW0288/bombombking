@@ -63,7 +63,7 @@ body{
     height:30px;
     position: fixed;
     top: 30px;
-    right: 20%;
+    right: calc(50% - 395px);
     z-index:100;
 }
 #map1{
@@ -72,6 +72,7 @@ body{
     border: none;
     width:346px;
     height:180px;
+    left: calc(50% - 173px);
     position: fixed;
     top: 140px;
     z-index:100;
@@ -82,6 +83,7 @@ body{
     border: none;
     width:346px;
     height:180px;
+    left: calc(50% - 173px);
     position: fixed;
     top: 380px;
     z-index:100;
