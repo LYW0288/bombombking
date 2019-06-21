@@ -579,7 +579,8 @@ function createScene() {
       }
     }
     var arr = window.location.href.split('?')[1];
-    console.log(arr)
+    var arr2 = window.location.href.split('?')[0];
+    console.log(arr, '+', arr2)
     createBazzi(-7, -6)
     if(arr == '1' || arr == '2')createDoe(-6, 5)
     if(arr == '2')createBazzi(6, -5)
