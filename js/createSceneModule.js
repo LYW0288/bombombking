@@ -579,11 +579,9 @@ function createScene() {
       }
     }
     var arr = window.location.href.split('?')[1];
-    var arr2 = window.location.href.split('?')[0];
-    console.log(arr, '+', arr2)
     createBazzi(-7, -6)
     if(arr == '1' || arr == '2')createDoe(-6, 5)
-    if(arr == '2')createBazzi(6, -5)
+    if(arr == '2')createUni(6, -5)
   } else if (map==1) {
     initfactory()
     for(let now=0; now<195; now++){
@@ -604,7 +602,7 @@ function createScene() {
     var arr = window.location.href.split('?')[1];
     createBazzi(-6, -6)
     if(arr == '1' || arr == '2')createDoe(-6, 6)
-    if(arr == '2')createBazzi(6, -6)
+    if(arr == '2')createUni(6, -6)
   }
   createWall(0, 1)
   createWall(0, -1)

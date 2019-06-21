@@ -163,6 +163,16 @@ function createDoe(x ,z) {
   mem++
 }
 
+function createUni(x ,z) {
+  Obj = new Uni(scale)
+  world.addBody(Obj.bodyBody)
+  scene.add(Obj.Bazzi)
+  Obj.Bazzi.position.set(x, 0.4, z)
+  Obj.bodyBody.position.set(x, 0.4, z)
+  BazziObj.push(Obj)
+  mem++
+}
+
 function createTarget() {
   x = playerBody.position.x
   y = playerBody.position.y
