@@ -1,20 +1,24 @@
 // 睏寶
 //var Bx, Bz;
 var counter = 0
-class Bazzi {
+class Doe {
   constructor(scale_) {
     this.walkOffset = 0
-    const headGeo = new THREE.BoxGeometry(0.5*scale_, 0.4*scale_, 0.45*scale_)
-    const earGeo = new THREE.BoxGeometry(0.2*scale_, 0.2*scale_, 0.2*scale_)
+    const headGeo = new THREE.BoxGeometry(0.55*scale_, 0.5*scale_, 0.5*scale_)
+    const earGeo = new THREE.BoxGeometry(0.35*scale_, 0.3*scale_, 0.3*scale_)
     const bodyGeo = new THREE.BoxGeometry(0.24*scale_, 0.24*scale_, 0.25*scale_)
-    const handGeo = new THREE.BoxGeometry(0.1*scale_, 0.2*scale_, 0.1*scale_)
-    const footGeo = new THREE.BoxGeometry(0.12*scale_, 0.15*scale_, 0.1*scale_)
+    const handGeo = new THREE.BoxGeometry(0.05*scale_, 0.2*scale_, 0.05*scale_)
+    const upGeo = new THREE.BoxGeometry(0.1*scale_, 0.1*scale_, 0.1*scale_)
+    const toeGeo = new THREE.BoxGeometry(0.12*scale_, 0.12*scale_, 0.14*scale_)
+    const footGeo = new THREE.BoxGeometry(0.1*scale_, 0.15*scale_, 0.1*scale_)
 
     const textureLoader = new THREE.TextureLoader()
-    const headMap = textureLoader.load('./img/face.png')
-    const skinMap = textureLoader.load('./img/belly.png')
-    const normalMap = textureLoader.load('./img/normal.png')
-    const normalMat = new THREE.MeshPhongMaterial({ color: 0xD70000 })
+    const headMap = textureLoader.load('./img/doeface.png')
+    const skinMap = textureLoader.load('./img/doebelly.png')
+    const normalMap = textureLoader.load('./img/doenormal.png')
+    const normalMat = new THREE.MeshPhongMaterial({ color: 0x1178D4 })
+    const skinMat = new THREE.MeshPhongMaterial({ color: 0xFFAC77 })
+    const white = new THREE.MeshPhongMaterial({ color: 0xE7EBEE })
 
     const headMaterials = []
     const skinMaterials = []
@@ -39,18 +43,40 @@ class Bazzi {
     this.body.position.set(0, -0.13*scale_, 0)
 
     this.ear1 = new THREE.Mesh(earGeo, normalMat)
-    this.ear1.position.set(0.25*scale_, 0.35*scale_, -0.225*scale_)
+    this.ear1.position.set(0.25*scale_, 0.19*scale_, 0)
     this.ear2 = this.ear1.clone()
-    this.ear2.position.set(-0.25*scale_, 0.35*scale_, -0.225*scale_)
+    this.ear2.position.set(-0.25*scale_, 0.19*scale_, 0)
 
-    this.foot1 = new THREE.Mesh(handGeo, normalMat)
-    this.foot1.position.set(-0.17*scale_, -0.11*scale_, 0)
-    this.foot2 = this.foot1.clone()
-    this.foot2.position.set(0.17*scale_, -0.11*scale_, 0)
-    this.foot3 = new THREE.Mesh(footGeo, normalMat)
-    this.foot3.position.set(0.055*scale_, -0.325*scale_, 0)
-    this.foot4 = this.foot3.clone()
-    this.foot4.position.set(-0.055*scale_, -0.325*scale_, 0)
+    this.hand1 = new THREE.Mesh(handGeo, skinMat)
+    this.hand1.position.set(-0.17*scale_, -0.11*scale_, 0)
+    this.hand2 = this.hand1.clone()
+    this.hand2.position.set(0.17*scale_, -0.11*scale_, 0)
+    this.hand3 = new THREE.Mesh(upGeo, white)
+    this.hand3.position.set(-0.17*scale_, -0.2*scale_, 0)
+    this.hand4 = this.hand3.clone()
+    this.hand4.position.set(0.17*scale_, -0.2*scale_, 0)
+    this.foot1 = new THREE.Group()
+    this.foot1.add(this.hand1) // 前腳左
+    this.foot1.add(this.hand3) // 後腳左
+    this.foot2 = new THREE.Group()
+    this.foot2.add(this.hand2) // 前腳左
+    this.foot2.add(this.hand4) // 後腳左
+
+
+    this.down1 = new THREE.Mesh(footGeo, skinMat)
+    this.down1.position.set(0.055*scale_, -0.325*scale_, 0)
+    this.down2 = this.down1.clone()
+    this.down2.position.set(-0.055*scale_, -0.325*scale_, 0)
+    this.down3 = new THREE.Mesh(toeGeo, normalMat)
+    this.down3.position.set(0.055*scale_, -0.365*scale_, 0)
+    this.down4 = this.down3.clone()
+    this.down4.position.set(-0.055*scale_, -0.365*scale_, 0)
+    this.foot3 = new THREE.Group()
+    this.foot3.add(this.down1) // 前腳左
+    this.foot3.add(this.down3) // 後腳左
+    this.foot4 = new THREE.Group()
+    this.foot4.add(this.down2) // 前腳左
+    this.foot4.add(this.down4) // 後腳左
 
 
     this.ear = new THREE.Group()

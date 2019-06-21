@@ -120,22 +120,9 @@ function check_explore(ammoBody, whose) {
   var y = playerBody.position.y;
   var z = playerBody.position.z;
   //here
-  if( (Math.abs(x-xx)<=playerBody.len && Math.round(z)==zz && Math.round(y-yy)<=playerBody.len) || (Math.abs(z-zz)<=playerBody.len && Math.round(x)==xx && Math.round(y-yy)<=playerBody.len) ){
+  if( y<=1 && ((Math.abs(Math.round(x)-xx)<=playerBody.len && Math.round(z)==zz && Math.round(y-yy)<=playerBody.len) || (Math.abs(Math.round(z)-zz)<=playerBody.len && Math.round(x)==xx && Math.round(y-yy)<=playerBody.len)) ){
     var die = setInterval(function(){
       handleEndGame('player');
-      clearInterval(die);
-    }, 300);
-  }
-  let Bx = BazziObj.bodyBody.position.x
-  let By = BazziObj.bodyBody.position.y;
-  let Bz = BazziObj.bodyBody.position.z;
-  if( (Math.abs(Bx-xx)<=playerBody.len && Math.round(Bz)==zz) || (Math.abs(Bz-zz)<=playerBody.len && Math.round(Bx)==xx) ){
-    var die = setInterval(function(){
-      if(whose != 'Bazzi'){
-        world.remove(BazziObj.bodyBody)
-        scene.remove(BazziObj.Bazzi)
-        handleEndGame('Bazzi');
-      }
       clearInterval(die);
     }, 300);
   }
@@ -156,13 +143,13 @@ function check_explore(ammoBody, whose) {
       }
       if(!jump){
         playerBody.first = false
+        world.remove(playerBody.firstAmmo)
+        scene.remove(playerBody.firstAmmoMesh)
         check_explore(playerBody.firstAmmo, 'player')
         var index = ammos.indexOf(playerBody.firstAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.firstAmmoMesh.geometry.dispose()
-        world.remove(playerBody.firstAmmo)
-        scene.remove(playerBody.firstAmmoMesh)
       }
     }
   }
@@ -183,13 +170,13 @@ function check_explore(ammoBody, whose) {
       if(!jump){
         //console.log('second bomb')
         playerBody.second = false
+        world.remove(playerBody.secondAmmo)
+        scene.remove(playerBody.secondAmmoMesh)
         check_explore(playerBody.secondAmmo, 'player')
         var index = ammos.indexOf(playerBody.secondAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.secondAmmoMesh.geometry.dispose()
-        world.remove(playerBody.secondAmmo)
-        scene.remove(playerBody.secondAmmoMesh)
       }
     }
   }
@@ -210,42 +197,57 @@ function check_explore(ammoBody, whose) {
       if(!jump){
         //console.log('third bomb')
         playerBody.third = false
+        world.remove(playerBody.thirdAmmo)
+        scene.remove(playerBody.thirdAmmoMesh)
         check_explore(playerBody.thirdAmmo, 'player')
         var index = ammos.indexOf(playerBody.thirdAmmo);
         if (index> -1)
           ammos.splice(index, 1);
         playerBody.thirdAmmoMesh.geometry.dispose()
-        world.remove(playerBody.thirdAmmo)
-        scene.remove(playerBody.thirdAmmoMesh)
       }
     }
   }
-  if(BazziFirst == true){
-    BazziFirst = false
-    var xxx = BazziFirstAmmo.ammoBody.position.x
-    var yyy = BazziFirstAmmo.ammoBody.position.y
-    var zzz = BazziFirstAmmo.ammoBody.position.z
-    if( (Math.abs(xxx-xx)<=playerBody.len && zzz==zz) || 
-         (Math.abs(zzz-zz)<=playerBody.len && xxx==xx) ){
-      let jump = false
-      for(var i=0; i < explores.length; i++){
-        if ( ((zzz-zz)==0 && Math.round(exploreMeshes[i].position.z)-zz==0 && (xxx-xx)*(Math.round(exploreMeshes[i].position.x)-xx)>0 && Math.abs(Math.round(exploreMeshes[i].position.x)-xx) < Math.abs(xxx-xx)) ||
-             ((xxx-xx)==0 && Math.round(exploreMeshes[i].position.x)-xx==0 && (zzz-zz)*(Math.round(exploreMeshes[i].position.z)-zz)>0 && Math.abs(Math.round(exploreMeshes[i].position.z)-zz) < Math.abs(zzz-zz)) ){
-          jump = true
-          break
+  for (var i=0; i<BazziObj.length; i++){
+    let Bx = BazziObj[i].bodyBody.position.x
+    let By = BazziObj[i].bodyBody.position.y;
+    let Bz = BazziObj[i].bodyBody.position.z;
+    if( (Math.abs(Math.round(Bx)-xx)<=playerBody.len && Math.round(Bz)==zz) || (Math.abs(Math.round(Bz)-zz)<=playerBody.len && Math.round(Bx)==xx) ){
+      console.log(Math.abs(Math.round(Bx)-xx) +" " +Math.abs(Math.round(Bz)-zz))
+      BazziObj[i].alive = false
+      var die = setInterval(function(){
+        if(--mem==0) handleEndGame('Bazzi');
+        clearInterval(die);
+      }, 6000);
+    }
+    
+    if(BazziObj[i].BazziFirst == true && BazziObj[i].BazziFirstAmmo!=ammoBody){
+      var xxx = BazziObj[i].BazziFirstAmmo.ammoBody.position.x
+      var yyy = BazziObj[i].BazziFirstAmmo.ammoBody.position.y
+      var zzz = BazziObj[i].BazziFirstAmmo.ammoBody.position.z
+      if( (Math.abs(xxx-xx)<=playerBody.len && zzz==zz) || 
+           (Math.abs(zzz-zz)<=playerBody.len && xxx==xx) ){
+        let jump = false
+        for(var i=0; i < explores.length; i++){
+          if ( ((zzz-zz)==0 && Math.round(exploreMeshes[i].position.z)-zz==0 && (xxx-xx)*(Math.round(exploreMeshes[i].position.x)-xx)>0 && Math.abs(Math.round(exploreMeshes[i].position.x)-xx) < Math.abs(xxx-xx)) ||
+               ((xxx-xx)==0 && Math.round(exploreMeshes[i].position.x)-xx==0 && (zzz-zz)*(Math.round(exploreMeshes[i].position.z)-zz)>0 && Math.abs(Math.round(exploreMeshes[i].position.z)-zz) < Math.abs(zzz-zz)) ){
+            jump = true
+            break
+          }
         }
-      }
-      if(!jump){
-        //console.log('Bazzi bomb')
-        check_explore(BazziFirstAmmo.ammoBody, 'Bazzi')
-        BazziFirstAmmo.ammoMesh.geometry.dispose()
-        world.remove(BazziFirstAmmo.ammoBody)
-        scene.remove(BazziFirstAmmo.ammoMesh)
+        if(!jump){
+          BazziObj[i].BazziFirst = false
+          world.remove(BazziObj[i].BazziFirstAmmo.ammoBody)
+          scene.remove(BazziObj[i].BazziFirstAmmo.ammoMesh)
+          check_explore(BazziObj[i].BazziFirstAmmo.ammoBody, 'Bazzi')
+          var index = ammos.indexOf(BazziObj[i].BazziFirstAmmo.ammoBody);
+          if (index> -1)
+            ammos.splice(index, 1);
+          BazziObj[i].BazziFirstAmmo.ammoMesh.geometry.dispose()
+        }
       }
     }
   }
   explore(xx, zz)
-  makeDelay();
 }
 
 // shooting related settings
@@ -263,13 +265,6 @@ function getShootDir(event, targetVec) {
 
   // 取得 raycaster 方向並決定發射方向
   targetVec.copy(raycaster.ray.direction)
-}
-
-function makeDelay() {
-  var id = setInterval(function(){
-    BazziFirstFlag = false;
-    clearInterval(id);
-  }, 500)
 }
 
 window.addEventListener('mousedown', function(e) {
@@ -317,10 +312,10 @@ window.addEventListener('mouseup', function(e) {
   
       // 子彈剛體與網格
       const ammoObj = new Ball(0.7)
-      //scene.add(ammoObj.ammoMesh)
-      //world.addBody(ammoObj.ammoBody)
+      scene.add(ammoObj.ammoMesh)
+      world.addBody(ammoObj.ammoBody)
+      ammos.push(ammoObj.ammoBody)
 /*
-      explores.push(ammoObj.ammoBody)
       exploreMeshes.push(ammoObj.ammoMesh)
       exploreKind.push('ammo')*/
       
@@ -329,24 +324,18 @@ window.addEventListener('mouseup', function(e) {
         playerBody.firstObj = ammoObj
         playerBody.firstAmmo = ammoObj.ammoBody;
         playerBody.firstAmmoMesh = ammoObj.ammoMesh;
-        scene.add(playerBody.firstObj.ammoMesh)
-        world.addBody(playerBody.firstObj.ammoBody)
         playerBody.first = true;
       }
       else if(nowBomb == 2){
         playerBody.secondObj = ammoObj
         playerBody.secondAmmo = ammoObj.ammoBody;
         playerBody.secondAmmoMesh = ammoObj.ammoMesh;
-        scene.add(playerBody.secondObj.ammoMesh)
-        world.addBody(playerBody.secondObj.ammoBody)
         playerBody.second = true;
       }
       else if(nowBomb == 3){
         playerBody.thirdObj = ammoObj
         playerBody.thirdAmmo = ammoObj.ammoBody;
         playerBody.thirdAmmoMesh = ammoObj.ammoMesh;
-        scene.add(playerBody.thirdObj.ammoMesh)
-        world.addBody(playerBody.thirdObj.ammoBody)
         playerBody.third = true;
       }
       playerBody.bomb = playerBody.bomb + 1;
