@@ -4,11 +4,11 @@ body{
 }
 #logo{
     position: fixed;
-    top: 15.5%;
+    top: 88px;
 }
 #logo:hover{
     height: 250px;
-    top: 13%;
+    top: 60px;
     left: -5px;
 }
 #btn1{
@@ -19,8 +19,8 @@ body{
     height: 64px;
     font-size:30px;
     font-family: 'Gloria Hallelujah', cursive;
-    top: 26%;
-    left: 38%;
+    top: 170px;
+    left: 480px;
 }
 #btn1:hover{
     top: 130px;
@@ -34,8 +34,8 @@ body{
     height: 64px;
     font-size:30px;
     font-family: 'Gloria Hallelujah', cursive;
-    top: 27%;
-    right: 8%;
+    top: 170px;
+    left: 950px;
 }
 #btn2:hover{
     top: 130px;
@@ -47,12 +47,12 @@ body{
 }
 #rule{
     position: fixed;
-    top: 4%;
+    top: 25px;
     z-index:90;
 }
 #map{
     position: fixed;
-    top: 4%;
+    top: 25px;
     z-index:90;
 }
 #ruleclose{
@@ -62,7 +62,7 @@ body{
     width:30px;
     height:30px;
     position: fixed;
-    top: 4.5%;
+    top: 30px;
     right: calc(50% - 395px);
     z-index:100;
 }
@@ -74,7 +74,7 @@ body{
     height:180px;
     left: calc(50% - 173px);
     position: fixed;
-    top: 22.4%;
+    top: 140px;
     z-index:100;
 }
 #map2{
@@ -85,6 +85,6 @@ body{
     height:180px;
     left: calc(50% - 173px);
     position: fixed;
-    top: 60.8%;
+    top: 380px;
     z-index:100;
 }

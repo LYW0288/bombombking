@@ -43,8 +43,8 @@ body{
 }
 #exit{
     position: fixed;
-    bottom: 35%;
-    left: 45%;
+    bottom: 200px;
+    left: 590px;
     width: 150px;
     height: 50px;
     border-radius: 8px;
