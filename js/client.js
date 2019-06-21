@@ -6,6 +6,7 @@ Client.askNewPlayer = function() {
 };
 
 Client.sendTest = function() {
+    console.log("send test")
     Client.socket.emit('test');
 };
 

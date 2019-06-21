@@ -27,6 +27,14 @@ io.on('connection', function(socket) {
     // Triggered whe new user is in 
     // We can use socket to communicate with clients
 
+    // listen to message "test"
+    socket.on('test', function() {
+        console.log(socket.request.connection.remoteAddress)
+        socket.emit('showIP', function() {
+            console.log(socket)
+        })
+    });
+
     // Add eventlistener to message "newplayer"
     socket.on('newplayer', function() {
 
@@ -42,7 +50,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function() {
-        io.emit('remove', socket.player.id);
+        //io.emit('remove', socket.player.id);
     });
 })
 
