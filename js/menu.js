@@ -1,8 +1,10 @@
 function rule(){
+    document.getElementById('menuBGM').play()
     document.getElementById('rule').style.display = ""
     document.getElementById('ruleclose').style.display = ""
 }
 function closewindow(){
+    document.getElementById('menuBGM').play()
     controlrule = document.getElementById('rule').style.display
     controlmap = document.getElementById('map').style.display
     if(controlrule == "none"){
@@ -17,6 +19,7 @@ function closewindow(){
     }
 }
 function start(){
+    document.getElementById('menuBGM').play()
     document.getElementById('map').style.display = ""
     document.getElementById('map1').style.display = ""
     document.getElementById('map2').style.display = ""
