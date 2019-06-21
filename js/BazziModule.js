@@ -1,7 +1,4 @@
 // 睏寶
-var BazziFirst = false;
-var BazziFirstFlag = false;
-var BazziFirstAmmo;
 //var Bx, Bz;
 var counter = 0
 class Bazzi {
@@ -95,6 +92,9 @@ class Bazzi {
     this.bodyBody.velocity.z = this.velocity
     this.positionx = 0
     this.positionz = 0
+    this.BazziFirst = false;
+    this.BazziFirstAmmo;
+    this.alive = true
   }
   putBall(){
     for(var i=0; i < explores.length; i++){
@@ -106,39 +106,51 @@ class Bazzi {
 
     // 子彈剛體與網格
     const ammoObj = new BazziBall(scale)
+    ammos.push(ammoObj.ammoBody)
     
-    BazziFirstAmmo = ammoObj
-    var temp = 0;
+    this.BazziFirstAmmo = ammoObj
     var x = this.Bazzi.position.x;
     var y = this.Bazzi.position.y;
     var z = this.Bazzi.position.z;
 
-    var id = setInterval(async function() { 
-      //console.log(temp);
-      temp = temp + 1; 
-      if(temp == 3){
-        scene.add(ammoObj.ammoMesh)
-        world.addBody(ammoObj.ammoBody)
-      }
-      else if(temp == 28){
-        await check_explore(BazziFirstAmmo.ammoBody, 'Bazzi')
-        ammoObj.ammoMesh.geometry.dispose()
-        world.remove(ammoObj.ammoBody)
-        scene.remove(ammoObj.ammoMesh)
-        clearInterval(id)
-      }
-    }, 200);
+    run(ammoObj, this)
 
     ammoObj.ammoBody.position.set(Math.round(x), 0.5*scale, Math.round(z))
     ammoObj.ammoMesh.position.set(Math.round(x), 0.5*scale, Math.round(z))
 
   }
+  search(direction){
+    var Isok = [0, 0, 0, 0]
+    let count = 0
+    if ((this.dir+direction)%2!=0){
+      var index = (direction%2==0) ? 
+                  Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-3)*15: 
+                  Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-2)
+      if ( index%15==14 ) Isok[3]=1
+      if ( index%15==0 ) Isok[1]=1
+      if ( Math.floor(index/15)==12 ) Isok[0]=1
+      if ( Math.floor(index/15)==0 ) Isok[2]=1
+      for(var i=0; i < exploreMeshes.length; i++){
+        var obj = Math.round(exploreMeshes[i].position.x)+7 + 15*(Math.round(exploreMeshes[i].position.z)+6)
+        if ( obj==index+1 ) Isok[3]=1
+        else if ( obj==index-1 ) Isok[1]=1
+        else if ( obj==index+15 ) Isok[0]=1
+        else if ( obj==index-15 ) Isok[2]=1
+      }
+      for (let i=0; i<4; i++) if(Isok[i]) count++
+    }
+    if(this.BazziFirst == false && !this.BazziFirstAmmo && count!=3){
+      this.BazziFirst = true
+      this.putBall();
+    }
+  }
   update(exploreMeshes, ammos) {
+    if(!this.alive) return
     var dir = this.Mapping(exploreMeshes, ammos)
     //這段是在偵測四周哪裡可以走
     if(this.dir == 4){ //向+z方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if (Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[0] != 3){
+      if (Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[0] != 2){
         if(Math.random()<0.05){
           //隨機向+x或-x方向走
           if (dir[1]==0 && dir[3]==0){
@@ -148,7 +160,6 @@ class Bazzi {
           else if(dir[1]==0) this.Turn(1)
           else if(dir[3]==0) this.Turn(3)
         }
-        else this.Turn(4)
       }
       else{
         //隨機向+x或-x方向走
@@ -159,18 +170,11 @@ class Bazzi {
         }
         else if(dir[1]==0) this.Turn(1)
         else if(dir[3]==0) this.Turn(3)
-        else if(dir[2]==0) {
-          if(Math.abs(this.bodyBody.position.z-this.positionz)<0.005 && BazziFirst == false && BazziFirstFlag == false){
-            BazziFirst = true
-            BazziFirstFlag = true
-            this.putBall();
-          }
-          this.Turn(2)
-        }
+        else if(dir[2]==0) this.Turn(2)
       }
     }else if(this.dir == 1){ //向-x方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if (Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[1] != 3){
+      if (Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[1] != 2){
         if(Math.random()<0.05){
           if (dir[2]==0 && dir[0]==0){
             if(Math.random()>0.5) this.Turn(2)
@@ -179,7 +183,6 @@ class Bazzi {
           else if(dir[2]==0) this.Turn(2)
           else if(dir[0]==0) this.Turn(4)
         }
-        else this.Turn(1)
       }
       else{
         //隨機向+z或-z方向走
@@ -189,18 +192,11 @@ class Bazzi {
         }
         else if(dir[2]==0) this.Turn(2)
         else if(dir[0]==0) this.Turn(4)
-        else if(dir[3]==0) {
-          if(Math.abs(this.bodyBody.position.x-this.positionx)<0.005 && BazziFirst == false && BazziFirstFlag == false){
-            BazziFirst = true
-            BazziFirstFlag = true
-            this.putBall();
-          }
-          this.Turn(3)
-        }
+        else if(dir[3]==0) this.Turn(3)
       }
     }else if(this.dir == 2){ //向-z方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if(Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[2] != 3){
+      if(Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[2] != 2){
         if(Math.random()<0.05){
           if (dir[1]==0 && dir[3]==0){
             if(Math.random()>0.5) this.Turn(1)
@@ -209,7 +205,6 @@ class Bazzi {
           else if(dir[1]==0) this.Turn(1)
           else if(dir[3]==0) this.Turn(3)
         }
-        else this.Turn(2)
       }
       else{
         //隨機向+x或-x方向走
@@ -219,19 +214,12 @@ class Bazzi {
         }
         else if(dir[1]==0) this.Turn(1)
         else if(dir[3]==0) this.Turn(3)
-        else if(dir[0]==0)  {
-          if(Math.abs(this.bodyBody.position.z-this.positionz)<0.005 && BazziFirstFlag == false && BazziFirst == false){
-            BazziFirst = true
-            BazziFirstFlag = true
-            this.putBall();
-          }
-          this.Turn(4)
-        }
+        else if(dir[0]==0) this.Turn(4)
       }
     }
     else if(this.dir == 3){ //向+x方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if(Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[3] != 3){
+      if(Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[3] != 2){
         if(Math.random()<0.05){
           if (dir[2]==0 && dir[0]==0){
             if(Math.random()>0.5) this.Turn(2)
@@ -240,7 +228,6 @@ class Bazzi {
           else if(dir[2]==0) this.Turn(2)
           else if(dir[0]==0) this.Turn(4)
         }
-        else this.Turn(3)
       }
       else{
         //隨機向+z或-z方向走
@@ -250,14 +237,7 @@ class Bazzi {
         }
         else if(dir[2]==0) this.Turn(2)
         else if(dir[0]==0) this.Turn(4)
-        else if(dir[1]==0) {
-          if(Math.abs(this.bodyBody.position.x-this.positionx)<0.005 && BazziFirst == false && BazziFirstFlag == false){
-            BazziFirst = true
-            BazziFirstFlag = true
-            this.putBall();
-          }
-          this.Turn(1)
-        }
+        else if(dir[1]==0) this.Turn(1)
       }
     }
     this.positionz = this.bodyBody.position.z
@@ -296,16 +276,6 @@ class Bazzi {
       if ( obj==index+15 || obj==index+30 || obj==index+16 || obj==index+14) dir[0] = 2
       if ( obj==index-15 || obj==index-30 || obj==index-16 || obj==index-14) dir[2] = 2
     }
-    //判斷睏寶的水球
-    if(BazziFirst == true){
-      var obj = Math.round(BazziFirstAmmo.ammoBody.position.x)+7 + 15*(Math.round(BazziFirstAmmo.ammoBody.position.z)+6)
-      if ( obj==index+1 ||obj==index+2 || obj==index+16 || obj==index-14 ) dir[3] = 3
-      if ( obj==index-1 || obj==index-2 || obj==index-16 || obj==index+14 ) dir[1] = 3
-      if ( obj==index+15 || obj==index+30 || obj==index+16 || obj==index+14 ) {
-        dir[0] = 3
-      }
-      if ( obj==index-15 || obj==index-30 || obj==index-16 || obj==index-14 ) dir[2] = 3
-    }
     //紀錄目前站立的地方可以走
     this.map[index] = 0
     //紀錄四周可不可以走
@@ -316,6 +286,7 @@ class Bazzi {
     return dir
   }
   Turn (direction){
+    this.search(direction)
     this.Bazzi.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI/2*direction)
     this.dir = direction
   }
@@ -327,4 +298,36 @@ class Bazzi {
     this.foot3.rotation.x = Math.sin(this.walkOffset) / 2 // 左腳
     this.foot4.rotation.x = -Math.sin(this.walkOffset) / 2 // 右腳
   }
+  Bubbling() {
+    this.walkOffset += 0.4
+    
+    this.foot1.rotation.x = Math.sin(this.walkOffset) / 2 // 右手
+    this.foot2.rotation.x = -Math.sin(this.walkOffset) / 2 // 左手
+    this.foot3.rotation.x = Math.sin(this.walkOffset) / 2 // 左腳
+    this.foot4.rotation.x = -Math.sin(this.walkOffset) / 2 // 右腳
+  }
+}
+
+function run(ammoObj, Obj){
+  var temp = 0;
+  var id = setInterval(async function() { 
+    //console.log(temp);
+    temp = temp + 1; 
+    if(temp == 5){
+      scene.add(ammoObj.ammoMesh)
+      world.addBody(ammoObj.ammoBody)
+    }
+    else if(temp == 30){
+      Obj.BazziFirst = false
+      Obj.BazziFirstAmmo = null
+      await check_explore(ammoObj.ammoBody, 'Bazzi')
+      var index = ammos.indexOf(ammoObj.ammoBody);
+      if (index> -1)
+        ammos.splice(index, 1);
+      ammoObj.ammoMesh.geometry.dispose()
+      world.remove(ammoObj.ammoBody)
+      scene.remove(ammoObj.ammoMesh)
+      clearInterval(id)
+    }
+  }, 200);
 }

@@ -1,12 +1,10 @@
 function rule(){
-    document.getElementById('menuBGM').play()
     document.getElementById('rule').style.display = ""
     document.getElementById('ruleclose').style.display = ""
 }
 function closewindow(){
     controlrule = document.getElementById('rule').style.display
     controlmap = document.getElementById('map').style.display
-    document.getElementById('menuBGM').play()
     if(controlrule == "none"){
         document.getElementById('map').style.display = "none"
         document.getElementById('map1').style.display = "none"
@@ -19,7 +17,6 @@ function closewindow(){
     }
 }
 function start(){
-    document.getElementById('menuBGM').play()
     document.getElementById('map').style.display = ""
     document.getElementById('map1').style.display = ""
     document.getElementById('map2').style.display = ""
