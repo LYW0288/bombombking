@@ -63,7 +63,7 @@ body{
     height:30px;
     position: fixed;
     top: 30px;
-    right: 250px;
+    right: 20%;
     z-index:100;
 }
 #map1{
@@ -74,7 +74,6 @@ body{
     height:180px;
     position: fixed;
     top: 140px;
-    left: 300px;
     z-index:100;
 }
 #map2{
@@ -85,6 +84,5 @@ body{
     height:180px;
     position: fixed;
     top: 380px;
-    left: 300px;
     z-index:100;
 }
