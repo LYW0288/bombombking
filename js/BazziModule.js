@@ -96,7 +96,7 @@ class Bazzi {
     this.BazziFirstAmmo;
     this.alive = true
   }
-  putBall(){
+  putBall(x, z, direction){
     for(var i=0; i < explores.length; i++){
       if (Math.round(exploreMeshes[i].position.z)==Math.round(z) && Math.round(exploreMeshes[i].position.x)==Math.round(x)){
         if (exploreKind[i] == 'Bush') continue
@@ -104,14 +104,20 @@ class Bazzi {
       }
     }
 
+    var pos_x = (direction%2==0) ? Math.round(this.bodyBody.position.x): Math.round(this.bodyBody.position.x) + (direction-2)
+    var pos_z = (direction%2==0) ? Math.round(this.bodyBody.position.z) + (direction-3): Math.round(this.bodyBody.position.z)
     // 子彈剛體與網格
     const ammoObj = new BazziBall(0.7)
     ammos.push(ammoObj.ammoBody)
     
     this.BazziFirstAmmo = ammoObj
-    var x = this.Bazzi.position.x;
-    var y = this.Bazzi.position.y;
-    var z = this.Bazzi.position.z;
+    var index = Math.round(this.Bazzi.position.x)+7 + 15*(Math.round(this.Bazzi.position.z)+6)
+
+    this.Bazzi.position.set(pos_x, this.scale, pos_z)
+    this.bodyBody.position.copy(this.Bazzi.position)
+
+    scene.add(ammoObj.ammoMesh)
+    world.addBody(ammoObj.ammoBody)
 
     run(ammoObj, this)
 
@@ -122,26 +128,31 @@ class Bazzi {
   search(direction){
     var Isok = [0, 0, 0, 0]
     let count = 0
-    if ((this.dir+direction)%2!=0){
-      var index = (direction%2==0) ? 
-                  Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-3)*15: 
-                  Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-2)
-      if ( index%15==14 ) Isok[3]=1
-      if ( index%15==0 ) Isok[1]=1
-      if ( Math.floor(index/15)==12 ) Isok[0]=1
-      if ( Math.floor(index/15)==0 ) Isok[2]=1
-      for(var i=0; i < exploreMeshes.length; i++){
-        var obj = Math.round(exploreMeshes[i].position.x)+7 + 15*(Math.round(exploreMeshes[i].position.z)+6)
-        if ( obj==index+1 ) Isok[3]=1
-        else if ( obj==index-1 ) Isok[1]=1
-        else if ( obj==index+15 ) Isok[0]=1
-        else if ( obj==index-15 ) Isok[2]=1
-      }
-      for (let i=0; i<4; i++) if(Isok[i]) count++
+    var index = (direction%2==0) ? 
+                Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-3)*15: 
+                Math.round(this.bodyBody.position.x)+7 + 15*(Math.round(this.bodyBody.position.z)+6) + (direction-2)
+    if ( index%15==14 ) Isok[3]=1
+    if ( index%15==0 ) Isok[1]=1
+    if ( Math.floor(index/15)==12 ) Isok[0]=1
+    if ( Math.floor(index/15)==0 ) Isok[2]=1
+    for(var i=0; i < exploreMeshes.length; i++){
+      var obj = Math.round(exploreMeshes[i].position.x)+7 + 15*(Math.round(exploreMeshes[i].position.z)+6)
+      if ( obj==index+1 ) Isok[3]=1
+      else if ( obj==index-1 ) Isok[1]=1
+      else if ( obj==index+15 ) Isok[0]=1
+      else if ( obj==index-15 ) Isok[2]=1
     }
+    for(var i=0; i < ammos.length; i++){
+      var obj = Math.round(ammos[i].position.x)+7 + 15*(Math.round(ammos[i].position.z)+6)
+      if ( obj==index+1 ) Isok[3]=1
+      else if ( obj==index-1 ) Isok[1]=1
+      else if ( obj==index+15 ) Isok[0]=1
+      else if ( obj==index-15 ) Isok[2]=1
+    }
+    for (let i=0; i<4; i++) if(Isok[i]) count++
     if(this.BazziFirst == false && !this.BazziFirstAmmo && count!=3){
       this.BazziFirst = true
-      this.putBall();
+      this.putBall(Math.round(this.bodyBody.position.x), Math.round(this.bodyBody.position.z), direction);
     }
   }
   update(exploreMeshes, ammos) {
@@ -153,7 +164,7 @@ class Bazzi {
     //這段是在偵測四周哪裡可以走
     if(this.dir == 4){ //向+z方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if (Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[0] != 2){
+      if (Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[0] != 1){
         if(Math.random()<0.05){
           //隨機向+x或-x方向走
           if (dir[1]==0 && dir[3]==0){
@@ -177,7 +188,7 @@ class Bazzi {
       }
     }else if(this.dir == 1){ //向-x方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if (Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[1] != 2){
+      if (Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[1] != 1){
         if(Math.random()<0.05){
           if (dir[2]==0 && dir[0]==0){
             if(Math.random()>0.5) this.Turn(2)
@@ -199,7 +210,7 @@ class Bazzi {
       }
     }else if(this.dir == 2){ //向-z方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if(Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[2] != 2){
+      if(Math.abs(this.bodyBody.position.z-this.positionz)>0.005 && dir[2] != 1){
         if(Math.random()<0.05){
           if (dir[1]==0 && dir[3]==0){
             if(Math.random()>0.5) this.Turn(1)
@@ -222,7 +233,7 @@ class Bazzi {
     }
     else if(this.dir == 3){ //向+x方向走的話
       //如果撞牆就會轉彎 或 有5%的機率會在中途轉彎
-      if(Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[3] != 2){
+      if(Math.abs(this.bodyBody.position.x-this.positionx)>0.005 && dir[3] != 1){
         if(Math.random()<0.05){
           if (dir[2]==0 && dir[0]==0){
             if(Math.random()>0.5) this.Turn(2)
@@ -274,10 +285,10 @@ class Bazzi {
     //用來檢測四周有沒有水球(ammos是我新增的array 在shootingModule中也有改動)
     for(var i=0; i < ammos.length; i++){
       var obj = Math.round(ammos[i].position.x)+7 + 15*(Math.round(ammos[i].position.z)+6)
-      if ( obj==index+1 ||obj==index+2 || obj==index+16 || obj==index-14 ) dir[3] = 2
-      if ( obj==index-1 || obj==index-2 || obj==index-16 || obj==index+14 ) dir[1] = 2
-      if ( obj==index+15 || obj==index+30 || obj==index+16 || obj==index+14) dir[0] = 2
-      if ( obj==index-15 || obj==index-30 || obj==index-16 || obj==index-14) dir[2] = 2
+      if ( obj==index+1 ||obj==index+2 || obj==index+16 || obj==index-14 ) dir[3] = 1
+      if ( obj==index-1 || obj==index-2 || obj==index-16 || obj==index+14 ) dir[1] = 1
+      if ( obj==index+15 || obj==index+30 || obj==index+16 || obj==index+14) dir[0] = 1
+      if ( obj==index-15 || obj==index-30 || obj==index-16 || obj==index-14) dir[2] = 1
     }
     //紀錄目前站立的地方可以走
     this.map[index] = 0
@@ -289,7 +300,10 @@ class Bazzi {
     return dir
   }
   Turn (direction){
-    this.search(direction)
+    if(this.first) this.first = false
+    else this.search(direction)
+    this.Bazzi.position.set(Math.round(this.bodyBody.position.x), this.scale, Math.round(this.bodyBody.position.z))
+    this.bodyBody.position.copy(this.Bazzi.position)
     this.Bazzi.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI/2*direction)
     this.dir = direction
   }
@@ -341,13 +355,7 @@ class Bazzi {
 function run(ammoObj, Obj){
   var temp = 0;
   var id = setInterval(async function() { 
-    //console.log(temp);
-    temp = temp + 1; 
-    if(temp == 5){
-      scene.add(ammoObj.ammoMesh)
-      world.addBody(ammoObj.ammoBody)
-    }
-    else if(temp == 30){
+      temp = temp + 1; 
       Obj.BazziFirst = false
       Obj.BazziFirstAmmo = null
       await check_explore(ammoObj.ammoBody, 'Bazzi')
@@ -358,6 +366,5 @@ function run(ammoObj, Obj){
       world.remove(ammoObj.ammoBody)
       scene.remove(ammoObj.ammoMesh)
       clearInterval(id)
-    }
-  }, 200);
+  }, 5000);
 }
