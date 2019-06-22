@@ -52,7 +52,7 @@ body{
 }
 #map{
     position: fixed;
-    top: 4%;
+    top: 25px;
     z-index:90;
 }
 #ruleclose{
@@ -74,7 +74,7 @@ body{
     height:180px;
     left: calc(50% - 173px);
     position: fixed;
-    top: 22.4%;
+    top: 140px;
     z-index:100;
 }
 #map2{
@@ -85,6 +85,6 @@ body{
     height:180px;
     left: calc(50% - 173px);
     position: fixed;
-    top: 60.8%;
+    top: 380px;
     z-index:100;
 }
