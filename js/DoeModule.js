@@ -114,7 +114,7 @@ class Doe {
     this.map = []
     this.dir = 4
     this.scale = 0.4*scale_
-    this.velocity = 5
+    this.velocity = 
     this.bodyBody.velocity.z = this.velocity
     this.positionx = 0
     this.positionz = 0
