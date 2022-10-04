@@ -90,11 +90,11 @@ function initRenderer() {
 
 function initLight() {
   // 設置環境光提供輔助柔和白光
-  let ambientLight = new THREE.AmbientLight(0x404040)
+  let ambientLight = new THREE.AmbientLight(0x40405f)
   scene.add(ambientLight)
 
   // 點光源
-  pointLight = new THREE.PointLight(0xf0f0f0, 1, 100) // 顏色, 強度, 距離
+  pointLight = new THREE.PointLight(0xfff0f0, 1, 100) // 顏色, 強度, 距離
   pointLight.castShadow = true // 投影
   pointLight.position.set(-30, 30, 30)
   // scene.add(pointLight)
